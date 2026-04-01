@@ -68,6 +68,8 @@ export class Game {
     this.gameOver = false;
     this.winner = null;
     this.lastMove = null;
+    this.drawReason = null;
+    this.positionHistory = [this._posKey()];
   }
 
   getPiece(r, c) {
@@ -305,10 +307,17 @@ export class Game {
     this.board[fr][fc] = EMPTY;
     this.lastMove = { from: [fr, fc], to: [tr, tc] };
     this.currentPlayer = -this.currentPlayer;
+    this.positionHistory.push(this._posKey());
     return captured;
   }
 
   checkGameOver() {
+    if (this.getRepetitionCount() >= 3) {
+      this.gameOver = true;
+      this.winner = null;
+      this.drawReason = 'repetition';
+      return;
+    }
     const moves = this.getAllMoves(this.currentPlayer);
     if (moves.length === 0) {
       this.gameOver = true;
@@ -323,15 +332,37 @@ export class Game {
 
   undoMove() {
     if (this.moveHistory.length === 0) return false;
+    this.positionHistory.pop();
     const last = this.moveHistory.pop();
     this.board[last.from[0]][last.from[1]] = last.piece;
     this.board[last.to[0]][last.to[1]] = last.captured;
     this.currentPlayer = last.player;
     this.gameOver = false;
     this.winner = null;
+    this.drawReason = null;
     this.lastMove = this.moveHistory.length > 0
       ? { from: this.moveHistory.at(-1).from, to: this.moveHistory.at(-1).to }
       : null;
     return true;
+  }
+
+  _posKey() {
+    let h = 0x811c9dc5;
+    h = Math.imul(h ^ (this.currentPlayer + 2), 0x01000193);
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++)
+        h = Math.imul(h ^ (this.board[r][c] + 8), 0x01000193);
+    return h | 0;
+  }
+
+  getRepetitionCount() {
+    const len = this.positionHistory.length;
+    if (len === 0) return 0;
+    const key = this.positionHistory[len - 1];
+    let count = 0;
+    for (let i = 0; i < len; i++) {
+      if (this.positionHistory[i] === key) count++;
+    }
+    return count;
   }
 }

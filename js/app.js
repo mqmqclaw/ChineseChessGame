@@ -127,8 +127,12 @@ class App {
 
   _updateStatus() {
     if (this.game.gameOver) {
-      const winner = this.game.winner === RED ? '红方' : '黑方';
-      this.statusEl.innerHTML = `<span class="status-gameover">棋局结束 — ${winner}获胜！</span>`;
+      if (this.game.drawReason === 'repetition') {
+        this.statusEl.innerHTML = '<span class="status-gameover">和棋 — 三次重复局面（禁止长将）</span>';
+      } else {
+        const winner = this.game.winner === RED ? '红方' : '黑方';
+        this.statusEl.innerHTML = `<span class="status-gameover">棋局结束 — ${winner}获胜！</span>`;
+      }
       return;
     }
 

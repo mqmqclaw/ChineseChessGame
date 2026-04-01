@@ -295,6 +295,15 @@ export class ChessAI {
     }
     this.nodes++;
 
+    if (ply > 0) {
+      const hist = this.game.positionHistory;
+      const len = hist.length;
+      const current = hist[len - 1];
+      for (let i = len - 3; i >= 0; i -= 2) {
+        if (hist[i] === current) return 0;
+      }
+    }
+
     const origAlpha = alpha;
     const side = this.game.currentPlayer;
 
