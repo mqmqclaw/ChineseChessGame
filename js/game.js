@@ -328,7 +328,7 @@ export class Game {
       this.drawReason = 'perpetual_check';
       return;
     }
-    if (this.getRepetitionCount() >= 3) {
+    if (this.getRepetitionCount() >= 10) {
       this.gameOver = true;
       this.winner = null;
       this.drawReason = 'repetition';

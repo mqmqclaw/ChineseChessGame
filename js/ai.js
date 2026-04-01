@@ -299,8 +299,9 @@ export class ChessAI {
       const hist = this.game.positionHistory;
       const len = hist.length;
       const current = hist[len - 1];
+      let repCount = 0;
       for (let i = len - 3; i >= 0; i -= 2) {
-        if (hist[i] === current) return 0;
+        if (hist[i] === current && ++repCount >= 9) return 0;
       }
     }
 
