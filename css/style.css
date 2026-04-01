@@ -23,9 +23,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   padding: 10px 0 20px;
+  padding: env(safe-area-inset-top, 10px) 0 env(safe-area-inset-bottom, 20px);
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  overscroll-behavior: none;
 }
 
 #game-container {
@@ -152,4 +154,9 @@ canvas#board {
   body { padding: 4px 0 8px; }
   #game-container { gap: 6px; }
   header h1 { font-size: 1.2rem; }
+}
+
+@media (display-mode: standalone) {
+  body { padding-top: max(10px, env(safe-area-inset-top)); }
+  header h1 { font-size: 1.4rem; }
 }
