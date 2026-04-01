@@ -70,6 +70,7 @@ export class Game {
     this.lastMove = null;
     this.drawReason = null;
     this.positionHistory = [this._posKey()];
+    this.consecutiveChecks = { [RED]: 0, [BLACK]: 0 };
   }
 
   getPiece(r, c) {
@@ -312,6 +313,21 @@ export class Game {
   }
 
   checkGameOver() {
+    const lastMover = -this.currentPlayer;
+    const inCheck = this.isInCheck(this.currentPlayer);
+    const prevCount = this.consecutiveChecks[lastMover];
+
+    if (this.moveHistory.length > 0) {
+      this.moveHistory.at(-1)._prevCheckCount = prevCount;
+    }
+    this.consecutiveChecks[lastMover] = inCheck ? prevCount + 1 : 0;
+
+    if (this.consecutiveChecks[lastMover] >= 20) {
+      this.gameOver = true;
+      this.winner = null;
+      this.drawReason = 'perpetual_check';
+      return;
+    }
     if (this.getRepetitionCount() >= 3) {
       this.gameOver = true;
       this.winner = null;
@@ -337,6 +353,9 @@ export class Game {
     this.board[last.from[0]][last.from[1]] = last.piece;
     this.board[last.to[0]][last.to[1]] = last.captured;
     this.currentPlayer = last.player;
+    if (last._prevCheckCount !== undefined) {
+      this.consecutiveChecks[last.player] = last._prevCheckCount;
+    }
     this.gameOver = false;
     this.winner = null;
     this.drawReason = null;
