@@ -322,7 +322,7 @@ export class Game {
     }
     this.consecutiveChecks[lastMover] = inCheck ? prevCount + 1 : 0;
 
-    if (this.consecutiveChecks[lastMover] >= 20) {
+    if (this.consecutiveChecks[lastMover] >= 10) {
       this.gameOver = true;
       this.winner = null;
       this.drawReason = 'perpetual_check';
