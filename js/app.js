@@ -2,12 +2,11 @@ import { Game, RED, BLACK, EMPTY, getSide } from './game.js';
 import { ChessAI } from './ai.js';
 import { Renderer } from './renderer.js';
 
-const DEPTH_MAP = { easy: 2, medium: 3, hard: 4 };
-
 class App {
   constructor() {
     this.game = new Game();
-    this.ai = new ChessAI(this.game, 3);
+    this.ai = new ChessAI(this.game);
+    this.ai.setDifficulty('medium');
     this.canvas = document.getElementById('board');
     this.renderer = new Renderer(this.canvas);
     this.statusEl = document.getElementById('status');
@@ -38,7 +37,7 @@ class App {
     document.getElementById('btn-new').addEventListener('click', () => this.newGame());
     document.getElementById('btn-undo').addEventListener('click', () => this.undoMove());
     document.getElementById('difficulty').addEventListener('change', (e) => {
-      this.ai.setDepth(DEPTH_MAP[e.target.value] || 3);
+      this.ai.setDifficulty(e.target.value);
     });
   }
 

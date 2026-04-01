@@ -281,13 +281,15 @@ export class Game {
     return null;
   }
 
-  getAllMoves(side) {
+  getAllMoves(side, capturesOnly = false) {
     const all = [];
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         if (getSide(this.board[r][c]) === side) {
           for (const [tr, tc] of this.getMovesForPiece(r, c)) {
-            all.push({ from: [r, c], to: [tr, tc] });
+            if (!capturesOnly || this.board[tr][tc] !== EMPTY) {
+              all.push({ from: [r, c], to: [tr, tc] });
+            }
           }
         }
       }
